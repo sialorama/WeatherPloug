@@ -13,8 +13,8 @@ def get_weather_data(city, weather_api_key):
     return response.json()
 
 # Function to generate a weather description using OpenAI's GPT model
-def genrate_weather_description(data, open_api_key):
-    # openai_api_key = openai_api_key
+def genrate_weather_description(data, openai_api_key):
+    openai_api_key = openai_api_key
 
     try:
         # Convert temperature from Kelvin to Celsius
@@ -83,11 +83,7 @@ def display_weekly_forcast(data):
 def main():
     # Sidebar configuration
     st.sidebar.title("Infos météo")
-    city = st.sidebar.text_input("Entrez le nom de la ville", "Brest")
-
-    # # API keys
-    # weather_api_key = "" # Replace with your own OpenWeatherMap API Key 
-    # open_api_key = "" # Replace with your own OpanAI API Key
+    city = st.sidebar.text_input("Entrez le nom de la ville", "Brest, Fr")
 
     # Button to fetch and display weather data
     submit  = st.sidebar.button("Afficher la météo")
