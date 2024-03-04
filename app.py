@@ -4,8 +4,8 @@ import openai
 
 # Function to get data from OpenWeatherMap
 def get_weather_data(city, weather_api_key):
-    base_url = "https://api.openweathermap.org/data/2.5/weather?"
-    complete_url = base_url + "appid=" + weather_api_key + "q=" + city
+    base_url = "https://api.openweathermap.org/data/2.5/weather"
+    complete_url = base_url + "?q=" + city + "&APPID=" + weather_api_key
     response = requests.get(complete_url)
     return response.json()
 
@@ -37,8 +37,8 @@ def main():
     city = st.sidebar.text_input("Entrez le nom de la ville", "Plougastel Daoulas")
 
     # API keys
-    weather_api_key = "4c80f0d7e67eabc49fdb2ff797159244" # Replace with your own OpenWeatherMap API Key 
-    open_api_key = "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" # Replace with your own OpanAI API Key
+    weather_api_key = "" # Replace with your own OpenWeatherMap API Key 
+    open_api_key = "" # Replace with your own OpanAI API Key
 
     # Button to fetch and display weather data
     submit  = st.sidebar.button("Afficher la météo")
