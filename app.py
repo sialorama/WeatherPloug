@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 import openai
+from apikey import openai_api_key, weather_api_key
 
 # Function to get data from OpenWeatherMap
 def get_weather_data(city, weather_api_key):
@@ -34,11 +35,11 @@ def genrate_weather_description(data, open_api_key):
 def main():
     # Sidebar configuration
     st.sidebar.title("Infos météo")
-    city = st.sidebar.text_input("Entrez le nom de la ville", "Plougastel Daoulas")
+    city = st.sidebar.text_input("Entrez le nom de la ville", "Plougastel-Daoulas")
 
-    # API keys
-    weather_api_key = "" # Replace with your own OpenWeatherMap API Key 
-    open_api_key = "" # Replace with your own OpanAI API Key
+    # # API keys
+    # weather_api_key = "" # Replace with your own OpenWeatherMap API Key 
+    # open_api_key = "" # Replace with your own OpanAI API Key
 
     # Button to fetch and display weather data
     submit  = st.sidebar.button("Afficher la météo")
