@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 from datetime import datetime
 import requests
 import openai
@@ -38,6 +39,46 @@ def get_weekly_forcast(weather_api_key, lat, lon):
     response = requests.get(complete_url)
     return response.json()
 
+def display_weekly_forcast(data):
+    try:
+        st.image("./img/bandeau.png", output_format="auto")
+        st.write("## Météo 7 jours")
+        displayed_dates = set() # To keep track of dates for which forecast has been displayed
+
+        c1, c2, c3, c4 = st.columns(4)
+        with c1:
+            st.metric("", "Jour")
+        with c2:
+            st.metric("", "Desription")
+        with c3:
+            st.metric("", "Minimale")
+        with c4:
+            st.metric("", "Maximale")
+
+        for day in data['list']:
+
+            date = datetime.fromtimestamp(day['dt']).strftime('%A, %B %d')
+            # Check if the date has been displayed
+            if date not in displayed_dates:
+                displayed_dates.add(date)
+
+                temp_min = day['main']['temp_min'] - 273.15
+                temp_max = day['main']['temp_max'] - 273.15
+                description = day['weather'][0]['description']
+
+                with c1:
+                    st.write(f"{date}")
+                with c2:
+                    st.write(f"{description.capitalize()}")
+                with c3:
+                    st.write(f"{temp_min:.1f} °C")
+                with c4:
+                    st.write(f"{temp_max:.1f} °C")
+
+    except Exception as e:
+        # Display an errro message for the weekly forecast
+        st.error("Service non disponible pour le moment : " + str(e))
+
 # Function to lunch streamlit app
 def main():
     # Sidebar configuration
@@ -50,11 +91,10 @@ def main():
 
     # Button to fetch and display weather data
     submit  = st.sidebar.button("Afficher la météo")
-    dateTime = datetime.now()
 
     if submit:
-        st.title("Heure : " + str(dateTime))
-        st.title("La météo à " + city + " : ")
+      
+        st.title("Météo " + city)
         with st.spinner('Chargement des informations ...'):
             weather_data = get_weather_data(city, weather_api_key)
             print (weather_data)
@@ -68,6 +108,31 @@ def main():
                 with col2:
                     st.metric("Pression ", f"{weather_data['main']['pressure']} hPa")
                     st.metric("Vent", f"{weather_data['wind']['speed'] * 3.6:.0f} km/h") # 1m/s = 3.6 km/h
+                
+                lat = weather_data['coord']['lat']
+                lon = weather_data['coord']['lon']
+
+                # Create a map with the data
+                data = pd.DataFrame({
+                    'latitude': [lat],
+                    'longitude': [lon]
+                    })
+                st.map(data)
+                
+                # 
+                weather_description = genrate_weather_description(weather_data, openai_api_key)
+                st.write(weather_description)
+
+                # 
+                forecast_data = get_weekly_forcast(weather_api_key, lat, lon)
+                print(forecast_data)
+
+                if forecast_data.get ("cod") != "404":
+                    display_weekly_forcast(forecast_data)
+                
+                else:
+                    st.error("Service non disponible pour le moment!")
+                
     else:
         # Display a message for the city not found
         st.error("Service non disponible pour la ville choisie !")
