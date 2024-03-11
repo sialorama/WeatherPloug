@@ -3,7 +3,7 @@ import pandas as pd
 from datetime import datetime
 import requests
 import openai
-from apikey import openai_api_key, weather_api_key
+from typing_extensions import Iterator, AsyncIterator
 
 # Function to get data from OpenWeatherMap
 def get_weather_data(city, weather_api_key):
@@ -82,6 +82,11 @@ def display_weekly_forcast(data):
 # Function to lunch streamlit app
 def main():
     # Sidebar configuration
+    
+    st.sidebar.title("Configuration des clés API:")
+    openai_api_key = st.sidebar.text_input("Entrez votre clé API d'OpenAI", type="password")
+    weather_api_key = st.sidebar.text_input("Entrez votre clé API d'OpenWeather", type="password")
+
     st.sidebar.title("Infos météo")
     city = st.sidebar.text_input("Entrez le nom de la ville", "Brest, Fr")
 
